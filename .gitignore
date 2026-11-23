@@ -1,0 +1,29 @@
+# --- Backend (PHP / Composer) ---
+backend/vendor/
+backend/.env
+backend/storage/*
+!backend/storage/.gitkeep
+
+# PHPUnit
+.phpunit.cache/
+.phpunit.result.cache
+
+# --- Frontend (React / Vite) ---
+node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.*.local
+
+# Falls Vite direkt nach backend/public/app baut, die nächste Zeile auskommentieren:
+# backend/public/app/
+
+# --- Logs ---
+*.log
+npm-debug.log*
+
+# --- IDE und Betriebssystem ---
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
