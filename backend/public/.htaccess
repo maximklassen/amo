@@ -1,0 +1,22 @@
+# Gehört nach backend/public/
+# Alle Anfragen außer existierenden Dateien und Ordnern gehen an index.php
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Authorization-Header an PHP durchreichen (nötig für Bearer-Tokens)
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Front Controller
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Versteckte Dateien (.env, .git usw.) sind per URL nicht erreichbar
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>

@@ -1,6 +1,6 @@
 {
-    "name": "your-vendor/project-backend",
-    "description": "PHP JSON API для проекта на PHP + React",
+    "name": "your-vendor/parzellenplaner-backend",
+    "description": "JSON-API für den ParzellenPlaner (Kleingartenverein)",
     "type": "project",
     "license": "proprietary",
     "require": {
@@ -28,7 +28,8 @@
             "Composer\\Config::disableProcessTimeout",
             "php -S localhost:8000 -t public"
         ],
-        "test": "phpunit"
+        "test": "phpunit",
+        "migrate": "@php bin/console migrate"
     },
     "config": {
         "optimize-autoloader": true,
