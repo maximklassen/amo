@@ -1,4 +1,11 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
+import Register from "./pages/register/Register";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Zaehler from "./pages/zaehler/Zaehler";
+import Rechnungen from "./pages/rechnungen/Rechnungen";
+import Begehung from "./pages/begehung/Begehung";
 
 
 function App() {
@@ -13,7 +20,6 @@ function App() {
                 <Link to="/mein-garten/zaehler">Zaehler</Link>
                 <Link to="/mein-garten/rechnungen">Rechnungen</Link>
                 <Link to="/mein-garten/begehung">Begehung</Link>
-                <ThemeSwitch />
             </nav>
 
             <Routes>
