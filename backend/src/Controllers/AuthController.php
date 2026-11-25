@@ -54,7 +54,7 @@ final class AuthController
 
         $user = $this->auth->register($data);
 
-        return Response::json(['user' => $user, 'csrf_token' => $this->csrf->token()], 201);
+        return Response::success(['user' => $user, 'csrf_token' => $this->csrf->token()], 201, 'Registriert');
     }
 
     /** POST /api/auth/login */
@@ -67,7 +67,7 @@ final class AuthController
 
         $user = $this->auth->login((string) $data['email'], (string) $data['password'], $request->ip);
 
-        return Response::json(['user' => $user, 'csrf_token' => $this->csrf->token()]);
+        return Response::success(['user' => $user, 'csrf_token' => $this->csrf->token()], 200, 'Angemeldet');
     }
 
     /**

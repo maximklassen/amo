@@ -9,10 +9,10 @@ use Throwable;
 
 /**
  * Ausnahme mit HTTP-Status. Der Kernel macht daraus eine JSON-Antwort:
- * {"error": "Nicht gefunden", "code": "not_found"}
+ * {"statuscode": 404, "error": true, "message": "Nicht gefunden", "response": null}
  *
- * "error" ist der Text für den Benutzer (so steht es im API-Vertrag), "code" ist ein
- * optionales, maschinenlesbares Zusatzfeld für das React-Frontend.
+ * "message" ist der Text für den Benutzer. Der maschinenlesbare "errorCode" kommt nicht in die Antwort
+ * (die Hülle laut API-Vertrag ist fest), dient aber Tests und Logs zur genauen Unterscheidung.
  */
 class HttpException extends RuntimeException
 {

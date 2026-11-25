@@ -31,9 +31,37 @@ final class Response
         ]);
     }
 
-    public static function noContent(): self
+    /**
+     * Erfolgsantwort im einheitlichen Format laut API-Vertrag:
+     * {"statuscode": 200, "error": false, "message": "OK", "response": <Daten>}
+     * Der HTTP-Status ist derselbe Wert wie "statuscode".
+     *
+     * @param array<string, string> $headers
+     */
+    public static function success(mixed $data = null, int $status = 200, string $message = 'OK', array $headers = []): self
     {
-        return new self('', 204);
+        return self::json([
+            'statuscode' => $status,
+            'error'      => false,
+            'message'    => $message,
+            'response'   => $data,
+        ], $status, $headers);
+    }
+
+    /**
+     * Fehlerantwort im einheitlichen Format: {"statuscode": 404, "error": true, "message": "...", "response": null}.
+     * $data bleibt normalerweise null; nur bei Validierungsfehlern ({"errors": {...}}) und im Debug-Modus gefüllt.
+     *
+     * @param array<string, string> $headers
+     */
+    public static function failure(int $status, string $message, mixed $data = null, array $headers = []): self
+    {
+        return self::json([
+            'statuscode' => $status,
+            'error'      => true,
+            'message'    => $message,
+            'response'   => $data,
+        ], $status, $headers);
     }
 
     public function status(): int
