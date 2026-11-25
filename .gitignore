@@ -9,10 +9,13 @@ backend/storage/*
 .phpunit.result.cache
 
 # --- Frontend (React / Vite) ---
+.vite/
 node_modules/
 frontend/dist/
 frontend/.env.local
 frontend/.env.*.local
+.env
+.env.local
 
 # Falls Vite direkt nach backend/public/app baut, die nächste Zeile auskommentieren:
 # backend/public/app/
