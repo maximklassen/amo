@@ -3,8 +3,9 @@ import { useAuth } from '@/hooks/useAuth.js';
 
 
 export default function ProtectedRoute() {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
 
+    if (loading) return <p>Laden…</p>; //TODO: Подумать как можно по другому
     if (!user) return <Navigate to="/login" replace />;
 
     return <Outlet />;
