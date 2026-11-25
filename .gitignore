@@ -29,3 +29,5 @@ npm-debug.log*
 Thumbs.db
 
 *smoke-auth.sh
+# --- Lokale Doku ---
+docs/backend.md
