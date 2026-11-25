@@ -33,6 +33,14 @@ final class ContainerTest extends TestCase
         self::assertSame($container->get(ContainerTestDep::class), $container->get(ContainerTestDep::class));
     }
 
+    public function testShareAutowiresButKeepsOneInstance(): void
+    {
+        $container = new Container();
+        $container->share(ContainerTestService::class);
+
+        self::assertSame($container->get(ContainerTestService::class), $container->get(ContainerTestService::class));
+    }
+
     public function testBindCreatesNewInstanceEveryTime(): void
     {
         $container = new Container();

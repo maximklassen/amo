@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use App\Auth\Auth;
 use App\Database\Connection;
+use App\Http\Csrf;
 use App\Http\NativeSession;
 use App\Http\Router;
 use App\Http\Session;
@@ -93,6 +95,9 @@ final class Application
             (array) $config->get('database', []),
             $this->basePath,
         ));
+
+        // Pro Anfrage nur einmal: Middleware und Controller sehen denselben angemeldeten Benutzer
+        $container->share(Csrf::class, Auth::class);
 
         // Session-Cookie: Name, Secure-Flag und SameSite kommen aus config/auth.php
         $container->singleton(Session::class, fn (): Session => new NativeSession(
