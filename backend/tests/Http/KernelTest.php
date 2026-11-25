@@ -79,7 +79,8 @@ final class KernelTest extends TestCase
         $response = $this->kernel(new Router())->handle(new Request('GET', '/api/nope'));
 
         self::assertSame(404, $response->status());
-        self::assertSame('not_found', $this->decode($response)['error']['code']);
+        self::assertSame('Nicht gefunden', $this->decode($response)['error']);
+        self::assertSame('not_found', $this->decode($response)['code']);
     }
 
     public function testWrongMethodReturns405WithAllowHeader(): void
@@ -91,7 +92,7 @@ final class KernelTest extends TestCase
 
         self::assertSame(405, $response->status());
         self::assertSame('GET', $response->header('Allow'));
-        self::assertSame('method_not_allowed', $this->decode($response)['error']['code']);
+        self::assertSame('method_not_allowed', $this->decode($response)['code']);
     }
 
     public function testMiddlewareRunsInOrderAroundHandler(): void
@@ -130,7 +131,7 @@ final class KernelTest extends TestCase
         $response = $this->kernel($router, container: $container)->handle(new Request('GET', '/api/secret'));
 
         self::assertSame(401, $response->status());
-        self::assertSame('unauthorized', $this->decode($response)['error']['code']);
+        self::assertSame('unauthorized', $this->decode($response)['code']);
         self::assertSame([], $recorder->events);
     }
 
@@ -153,7 +154,8 @@ final class KernelTest extends TestCase
         $body = $this->decode($response);
 
         self::assertSame(500, $response->status());
-        self::assertSame('server_error', $body['error']['code']);
+        self::assertSame('Interner Serverfehler', $body['error']);
+        self::assertSame('server_error', $body['code']);
         self::assertArrayNotHasKey('debug', $body);
         self::assertStringNotContainsString('geheimes', $response->body());
 
@@ -181,7 +183,7 @@ final class KernelTest extends TestCase
         $response = $this->kernel($router)->handle($request);
 
         self::assertSame(400, $response->status());
-        self::assertSame('invalid_json', $this->decode($response)['error']['code']);
+        self::assertSame('invalid_json', $this->decode($response)['code']);
     }
 
     public function testJsonBodyReachesHandler(): void
@@ -211,7 +213,20 @@ final class KernelTest extends TestCase
 
         self::assertSame(429, $response->status());
         self::assertSame('30', $response->header('Retry-After'));
-        self::assertSame('Zu viele Anfragen', $this->decode($response)['error']['message']);
+        self::assertSame('Zu viele Anfragen', $this->decode($response)['error']);
+    }
+
+    public function testValidationErrorsAreListedPerField(): void
+    {
+        $router = new Router();
+        $router->post('/api/x', static fn () => throw HttpException::validation(['email' => 'E-Mail ungültig']));
+
+        $response = $this->kernel($router)->handle(new Request('POST', '/api/x'));
+        $body = $this->decode($response);
+
+        self::assertSame(400, $response->status()); // laut API-Vertrag 400 (nicht 422)
+        self::assertSame('Die Eingaben sind ungültig', $body['error']);
+        self::assertSame(['email' => 'E-Mail ungültig'], $body['errors']);
     }
 
     private function kernel(Router $router, bool $debug = false, ?Container $container = null): Kernel

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\Database\Connection;
+use App\Http\NativeSession;
 use App\Http\Router;
+use App\Http\Session;
 use App\Support\Logger;
 use App\Support\Path;
 use ErrorException;
@@ -90,6 +92,13 @@ final class Application
         $container->singleton(Connection::class, fn (): Connection => Connection::fromConfig(
             (array) $config->get('database', []),
             $this->basePath,
+        ));
+
+        // Session-Cookie: Name, Secure-Flag und SameSite kommen aus config/auth.php
+        $container->singleton(Session::class, fn (): Session => new NativeSession(
+            (string) $config->get('auth.session.name', 'PARZELLEN_SID'),
+            $config->get('auth.session.secure'),
+            (string) $config->get('auth.session.same_site', 'Lax'),
         ));
 
         $container->singleton(Router::class, function (): Router {

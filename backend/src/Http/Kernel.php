@@ -40,7 +40,7 @@ final class Kernel
 
             return $this->runMiddleware($match->middleware, $request, $core);
         } catch (HttpException $e) {
-            return $this->errorResponse($e->getStatus(), $e->getErrorCode(), $e->getMessage(), $e->getHeaders());
+            return $this->errorResponse($e->getStatus(), $e->getErrorCode(), $e->getMessage(), $e->getHeaders(), [], $e->getErrors());
         } catch (Throwable $e) {
             $this->logger->error('Unbehandelte Ausnahme: ' . $e->getMessage(), ['exception' => $e]);
 
@@ -110,9 +110,18 @@ final class Kernel
     /**
      * @param array<string, string> $headers
      * @param array<string, mixed>  $extra
+     * @param array<string, string> $errors Fehlermeldungen je Eingabefeld (nur bei Validierungsfehlern)
      */
-    private function errorResponse(int $status, string $code, string $message, array $headers = [], array $extra = []): Response
+    private function errorResponse(int $status, string $code, string $message, array $headers = [], array $extra = [], array $errors = []): Response
     {
-        return Response::json(['error' => ['code' => $code, 'message' => $message]] + $extra, $status, $headers);
+        // Format laut API-Vertrag: "error" ist der Text für den Benutzer.
+        // "code" (und bei Validierung "errors" je Feld) sind optionale Zusatzfelder für das Frontend.
+        $body = ['error' => $message, 'code' => $code];
+
+        if ($errors !== []) {
+            $body['errors'] = $errors;
+        }
+
+        return Response::json($body + $extra, $status, $headers);
     }
 }

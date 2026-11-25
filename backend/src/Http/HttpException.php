@@ -9,21 +9,32 @@ use Throwable;
 
 /**
  * Ausnahme mit HTTP-Status. Der Kernel macht daraus eine JSON-Antwort:
- * {"error": {"code": "not_found", "message": "Nicht gefunden"}}
+ * {"error": "Nicht gefunden", "code": "not_found"}
  *
- * "code" ist maschinenlesbar (für das React-Frontend), "message" ist für Menschen.
+ * "error" ist der Text für den Benutzer (so steht es im API-Vertrag), "code" ist ein
+ * optionales, maschinenlesbares Zusatzfeld für das React-Frontend.
  */
 class HttpException extends RuntimeException
 {
-    /** @param array<string, string> $headers zusätzliche Antwort-Header */
+    /**
+     * @param array<string, string> $headers zusätzliche Antwort-Header
+     * @param array<string, string> $errors  Fehlermeldungen je Eingabefeld (bei Validierungsfehlern)
+     */
     public function __construct(
         private readonly int $status,
         private readonly string $errorCode,
         string $message = '',
         private readonly array $headers = [],
         ?Throwable $previous = null,
+        private readonly array $errors = [],
     ) {
         parent::__construct($message, $status, $previous);
+    }
+
+    /** @return array<string, string> */
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 
     public function getStatus(): int
@@ -60,6 +71,27 @@ class HttpException extends RuntimeException
     public static function notFound(string $message = 'Nicht gefunden'): self
     {
         return new self(404, 'not_found', $message);
+    }
+
+    public static function conflict(string $errorCode = 'conflict', string $message = 'Konflikt mit dem aktuellen Zustand'): self
+    {
+        return new self(409, $errorCode, $message);
+    }
+
+    /**
+     * Ungültige Eingaben: laut API-Vertrag Status 400, mit einer Meldung je Feld.
+     *
+     * @param array<string, string> $errors Feldname => Fehlermeldung
+     */
+    public static function validation(array $errors, string $message = 'Die Eingaben sind ungültig'): self
+    {
+        return new self(400, 'validation_failed', $message, [], null, $errors);
+    }
+
+    /** @param int $retryAfter Sekunden, bis ein neuer Versuch sinnvoll ist */
+    public static function tooManyRequests(int $retryAfter, string $message = 'Zu viele Versuche, bitte später erneut versuchen'): self
+    {
+        return new self(429, 'too_many_requests', $message, ['Retry-After' => (string) max(1, $retryAfter)]);
     }
 
     /** @param list<string> $allowed erlaubte Methoden für diese URL */
