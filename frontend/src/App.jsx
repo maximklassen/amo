@@ -1,39 +1,53 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import Home from "./pages/home/Home";
-import Login from "./pages/login/Login";
-import Register from "./pages/register/Register";
-import Dashboard from "./pages/dashboard/Dashboard";
-import Zaehler from "./pages/zaehler/Zaehler";
-import Rechnungen from "./pages/rechnungen/Rechnungen";
-import Begehung from "./pages/begehung/Begehung";
+import { Routes, Route } from 'react-router-dom';
+import ProtectedRoute from '@/components/shared/ProtectedRoute.jsx';
 
 
-function App() {
-    return (
-        <BrowserRouter>
-            <nav className="app-nav">
-                <Link to="/">Home</Link>
-                <Link to="/login">Login</Link>
-                <Link to="/register">Register</Link>
+import StartseitePage     from '@/pages/public/StartseitePage.jsx';
+import UeberUnsPage       from '@/pages/public/UeberUnsPage.jsx';
+import KontaktPage        from '@/pages/public/KontaktPage.jsx';
+import LoginPage          from '@/pages/auth/LoginPage.jsx';
+import RegisterPage       from '@/pages/auth/RegisterPage.jsx';
+import DashboardPage      from '@/pages/dashboard/DashboardPage.jsx';
+import ParzellenPage      from '@/pages/parzellen/ParzellenPage.jsx';
+import ParzellenDetailPage from '@/pages/parzellen/ParzellenDetailPage.jsx';
+import WartelistePage     from '@/pages/warteliste/WartelistePage.jsx';
+import GemeinschaftPage   from '@/pages/gemeinschaft/GemeinschaftPage.jsx';
+import SchwarztesBrettPage from '@/pages/schwarzesbrett/SchwarztesBrettPage.jsx';
+import ProfilPage         from '@/pages/profil/ProfilPage.jsx';
+import EinstellungenPage  from '@/pages/einstellungen/EinstellungenPage.jsx';
+import NotFoundPage       from '@/pages/NotFoundPage.jsx';
 
-                <Link to="/mein-garten">Dashboard</Link>
-                <Link to="/mein-garten/zaehler">Zaehler</Link>
-                <Link to="/mein-garten/rechnungen">Rechnungen</Link>
-                <Link to="/mein-garten/begehung">Begehung</Link>
-            </nav>
+import Header from '@/components/layout/Header.jsx';
+import Footer from '@/components/layout/Footer.jsx';
 
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login  />} />
-                <Route path="/register" element={<Register />} />
+export default function App() {
 
-                <Route path="/mein-garten" element={<Dashboard />} />
-                <Route path="/mein-garten/zaehler" element={<Zaehler />} />
-                <Route path="/mein-garten/rechnungen" element={<Rechnungen />} />
-                <Route path="/mein-garten/begehung" element={<Begehung />} />
-            </Routes>
-        </BrowserRouter>
-    );
+  return (
+    <>
+      <Header />
+      <main>
+        <Routes>
+          <Route path="/"          element={<StartseitePage />} />
+          <Route path="/ueber-uns" element={<UeberUnsPage />} />
+          <Route path="/kontakt"   element={<KontaktPage />} />
+          <Route path="/login"     element={<LoginPage />} />
+          <Route path="/register"  element={<RegisterPage />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard"       element={<DashboardPage />} />
+            <Route path="/parzellen"       element={<ParzellenPage />} />
+            <Route path="/parzellen/:id"   element={<ParzellenDetailPage />} />
+            <Route path="/warteliste"      element={<WartelistePage />} />
+            <Route path="/gemeinschaft"    element={<GemeinschaftPage />} />
+            <Route path="/schwarzes-brett" element={<SchwarztesBrettPage />} />
+            <Route path="/profil"          element={<ProfilPage />} />
+            <Route path="/einstellungen"   element={<EinstellungenPage />} />
+          </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </main>
+      <Footer />
+    </>
+  );
 }
-
-export default App;
