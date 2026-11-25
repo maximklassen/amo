@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Controllers\HealthController;
+use App\Controllers\ParcelController;
 use App\Http\Router;
 
 // Alle API-Routen. Die Datei gibt eine Funktion zurück, die den Router befüllt.
@@ -11,5 +12,8 @@ use App\Http\Router;
 //       $r->get('/parzellen/{id:\d+}', [ParzellenController::class, 'show']);
 //   });
 return static function (Router $router): void {
-    $router->get('/api/health', [HealthController::class, 'show']);
+    [
+        $router->get('/api/health', [HealthController::class, 'show']),
+        $router->get('/api/parcells', [ParcelController::class, 'all']),
+    ];
 };
