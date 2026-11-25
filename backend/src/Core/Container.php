@@ -40,6 +40,17 @@ final class Container
         unset($this->instances[$id]);
     }
 
+    /**
+     * Klassen, die per Autowiring gebaut werden, aber nur einmal pro Anfrage existieren sollen
+     * (z. B. Auth: Middleware und Controller müssen dasselbe Objekt sehen).
+     */
+    public function share(string ...$classes): void
+    {
+        foreach ($classes as $class) {
+            $this->singleton($class, fn (): object => $this->autowire($class));
+        }
+    }
+
     public function instance(string $id, object $instance): void
     {
         $this->instances[$id] = $instance;

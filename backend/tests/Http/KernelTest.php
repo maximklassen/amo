@@ -40,7 +40,7 @@ final class KernelTest extends TestCase
 
         self::assertSame(200, $response->status());
         self::assertSame('application/json; charset=utf-8', $response->header('Content-Type'));
-        self::assertSame(['pong' => true, 'text' => 'Grüße'], $this->decode($response));
+        self::assertSame(['pong' => true, 'text' => 'Grüße'], $this->decode($response)['response']);
         // Umlaute dürfen nicht als ü-Escapes ausgegeben werden
         self::assertStringContainsString('Grüße', $response->body());
     }
@@ -52,18 +52,31 @@ final class KernelTest extends TestCase
 
         $response = $this->kernel($router)->handle(new Request('GET', '/api/hello/Anna'));
 
-        self::assertSame(['message' => 'Hallo Anna'], $this->decode($response));
+        self::assertSame(['message' => 'Hallo Anna'], $this->decode($response)['response']);
     }
 
-    public function testNullResultBecomesNoContent(): void
+    public function testEveryResponseUsesTheEnvelopeAndStatusMatchesStatuscode(): void
+    {
+        $router = new Router();
+        $router->get('/api/ok', static fn (): array => ['id' => 5]);
+
+        $ok = $this->kernel($router)->handle(new Request('GET', '/api/ok'));
+        self::assertSame(['statuscode' => 200, 'error' => false, 'message' => 'OK', 'response' => ['id' => 5]], $this->decode($ok));
+
+        $missing = $this->kernel($router)->handle(new Request('GET', '/api/nope'));
+        self::assertSame(404, $missing->status());
+        self::assertSame(['statuscode' => 404, 'error' => true, 'message' => 'Nicht gefunden', 'response' => null], $this->decode($missing));
+    }
+
+    public function testNullResultBecomesEnvelopeWithNullResponse(): void
     {
         $router = new Router();
         $router->delete('/api/x', static fn (): null => null);
 
         $response = $this->kernel($router)->handle(new Request('DELETE', '/api/x'));
 
-        self::assertSame(204, $response->status());
-        self::assertSame('', $response->body());
+        self::assertSame(200, $response->status());
+        self::assertSame(['statuscode' => 200, 'error' => false, 'message' => 'OK', 'response' => null], $this->decode($response));
     }
 
     public function testResponseObjectIsPassedThrough(): void
@@ -79,7 +92,7 @@ final class KernelTest extends TestCase
         $response = $this->kernel(new Router())->handle(new Request('GET', '/api/nope'));
 
         self::assertSame(404, $response->status());
-        self::assertSame('not_found', $this->decode($response)['error']['code']);
+        self::assertSame('Nicht gefunden', $this->decode($response)['message']);
     }
 
     public function testWrongMethodReturns405WithAllowHeader(): void
@@ -91,7 +104,7 @@ final class KernelTest extends TestCase
 
         self::assertSame(405, $response->status());
         self::assertSame('GET', $response->header('Allow'));
-        self::assertSame('method_not_allowed', $this->decode($response)['error']['code']);
+        self::assertSame(405, $this->decode($response)['statuscode']);
     }
 
     public function testMiddlewareRunsInOrderAroundHandler(): void
@@ -130,7 +143,7 @@ final class KernelTest extends TestCase
         $response = $this->kernel($router, container: $container)->handle(new Request('GET', '/api/secret'));
 
         self::assertSame(401, $response->status());
-        self::assertSame('unauthorized', $this->decode($response)['error']['code']);
+        self::assertSame('Anmeldung erforderlich', $this->decode($response)['message']);
         self::assertSame([], $recorder->events);
     }
 
@@ -141,7 +154,7 @@ final class KernelTest extends TestCase
 
         $response = $this->kernel($router)->handle(new Request('GET', '/api/me'));
 
-        self::assertSame(['user' => 'anna'], $this->decode($response));
+        self::assertSame(['user' => 'anna'], $this->decode($response)['response']);
     }
 
     public function testUnexpectedExceptionBecomes500WithoutDetailsAndIsLogged(): void
@@ -153,8 +166,9 @@ final class KernelTest extends TestCase
         $body = $this->decode($response);
 
         self::assertSame(500, $response->status());
-        self::assertSame('server_error', $body['error']['code']);
-        self::assertArrayNotHasKey('debug', $body);
+        self::assertSame('Interner Serverfehler', $body['message']);
+        self::assertTrue($body['error']);
+        self::assertNull($body['response']); // keine Details nach außen
         self::assertStringNotContainsString('geheimes', $response->body());
 
         self::assertFileExists($this->logFile);
@@ -168,8 +182,8 @@ final class KernelTest extends TestCase
 
         $body = $this->decode($this->kernel($router, debug: true)->handle(new Request('GET', '/api/boom')));
 
-        self::assertSame('Detail', $body['debug']['message']);
-        self::assertSame(\RuntimeException::class, $body['debug']['exception']);
+        self::assertSame('Detail', $body['response']['debug']['message']);
+        self::assertSame(\RuntimeException::class, $body['response']['debug']['exception']);
     }
 
     public function testInvalidJsonBodyReturns400(): void
@@ -181,7 +195,7 @@ final class KernelTest extends TestCase
         $response = $this->kernel($router)->handle($request);
 
         self::assertSame(400, $response->status());
-        self::assertSame('invalid_json', $this->decode($response)['error']['code']);
+        self::assertTrue($this->decode($response)['error']);
     }
 
     public function testJsonBodyReachesHandler(): void
@@ -191,7 +205,7 @@ final class KernelTest extends TestCase
 
         $request = new Request('POST', '/api/echo', headers: ['Content-Type' => 'application/json'], rawBody: '{"a":1}');
 
-        self::assertSame(['a' => 1], $this->decode($this->kernel($router)->handle($request)));
+        self::assertSame(['a' => 1], $this->decode($this->kernel($router)->handle($request))['response']);
     }
 
     public function testUnsupportedHandlerResultBecomes500(): void
@@ -211,7 +225,20 @@ final class KernelTest extends TestCase
 
         self::assertSame(429, $response->status());
         self::assertSame('30', $response->header('Retry-After'));
-        self::assertSame('Zu viele Anfragen', $this->decode($response)['error']['message']);
+        self::assertSame('Zu viele Anfragen', $this->decode($response)['message']);
+    }
+
+    public function testValidationErrorsAreListedPerField(): void
+    {
+        $router = new Router();
+        $router->post('/api/x', static fn () => throw HttpException::validation(['email' => 'E-Mail ungültig']));
+
+        $response = $this->kernel($router)->handle(new Request('POST', '/api/x'));
+        $body = $this->decode($response);
+
+        self::assertSame(400, $response->status()); // laut API-Vertrag 400 (nicht 422)
+        self::assertSame('Die Eingaben sind ungültig', $body['message']);
+        self::assertSame(['errors' => ['email' => 'E-Mail ungültig']], $body['response']);
     }
 
     private function kernel(Router $router, bool $debug = false, ?Container $container = null): Kernel

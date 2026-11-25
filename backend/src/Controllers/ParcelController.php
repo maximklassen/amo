@@ -29,8 +29,22 @@ final class ParcelController
         ]);
     }
 
-    public function show()
+    public function show(Request $request, bool $full = false)
     {
-        //
+        $id = (int)$request->param('id') ?? null;
+
+        $query = 'SELECT `id`, `number`, `size_m2`';
+        if ($full) $query .= ', `has_water`, `has_power`, `has_hut`, `svg_path`, `status`';
+        $query .= ' FROM parcels WHERE id = :id';
+        $parcel = $this->db->first($query, ['id' => $id]);
+
+
+
+        return Response::json([
+            'statuscode' => $parcel ? 200 : 404,
+            'error' => !(bool)$parcel,
+            'message' => $parcel ? 'OK' : 'Not found',
+            'response' => $parcel,
+        ]);
     }
 }

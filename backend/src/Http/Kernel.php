@@ -18,7 +18,9 @@ use Throwable;
  * Route finden -> Middleware-Kette -> Handler -> Ergebnis in Response umwandeln.
  * Fehler werden als JSON ausgegeben, unerwartete Ausnahmen protokolliert.
  *
- * Handler dürfen zurückgeben: Response, Array/JsonSerializable (wird JSON mit 200) oder null (204).
+ * Alle Antworten haben dieselbe Hülle (siehe Response::success / Response::failure).
+ * Handler dürfen zurückgeben: Response, Array/JsonSerializable (wird "response" mit Status 200) oder null
+ * ("response": null, Status 200; ein Body mit Hülle ist wichtiger als 204).
  */
 final class Kernel
 {
@@ -40,20 +42,20 @@ final class Kernel
 
             return $this->runMiddleware($match->middleware, $request, $core);
         } catch (HttpException $e) {
-            return $this->errorResponse($e->getStatus(), $e->getErrorCode(), $e->getMessage(), $e->getHeaders());
+            return $this->errorResponse($e->getStatus(), $e->getMessage(), $e->getHeaders(), [], $e->getErrors());
         } catch (Throwable $e) {
             $this->logger->error('Unbehandelte Ausnahme: ' . $e->getMessage(), ['exception' => $e]);
 
             // Details nur im Debug-Modus nach außen geben
-            $extra = $this->config->get('app.debug', false)
-                ? ['debug' => [
+            $debug = $this->config->get('app.debug', false)
+                ? [
                     'exception' => $e::class,
                     'message'   => $e->getMessage(),
                     'trace'     => explode("\n", $e->getTraceAsString()),
-                ]]
+                ]
                 : [];
 
-            return $this->errorResponse(500, 'server_error', 'Interner Serverfehler', [], $extra);
+            return $this->errorResponse(500, 'Interner Serverfehler', [], $debug);
         }
     }
 
@@ -74,8 +76,7 @@ final class Kernel
     {
         return match (true) {
             $result instanceof Response => $result,
-            $result === null            => Response::noContent(),
-            is_array($result), $result instanceof JsonSerializable => Response::json($result),
+            $result === null, is_array($result), $result instanceof JsonSerializable => Response::success($result),
             default => throw new LogicException('Ein Handler muss Response, Array, JsonSerializable oder null zurückgeben'),
         };
     }
@@ -109,10 +110,18 @@ final class Kernel
 
     /**
      * @param array<string, string> $headers
-     * @param array<string, mixed>  $extra
+     * @param array<string, mixed>  $debug  Details der Ausnahme (nur im Debug-Modus)
+     * @param array<string, string> $errors Fehlermeldungen je Eingabefeld (nur bei Validierungsfehlern)
      */
-    private function errorResponse(int $status, string $code, string $message, array $headers = [], array $extra = []): Response
+    private function errorResponse(int $status, string $message, array $headers = [], array $debug = [], array $errors = []): Response
     {
-        return Response::json(['error' => ['code' => $code, 'message' => $message]] + $extra, $status, $headers);
+        // "response" bleibt null, außer bei Validierungsfehlern (Meldung je Feld) und im Debug-Modus
+        $data = match (true) {
+            $errors !== [] => ['errors' => $errors],
+            $debug !== []  => ['debug' => $debug],
+            default        => null,
+        };
+
+        return Response::failure($status, $message, $data, $headers);
     }
 }

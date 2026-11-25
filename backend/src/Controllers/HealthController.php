@@ -20,10 +20,14 @@ final class HealthController
     {
         $databaseOk = $this->db->ping();
 
-        return Response::json([
-            'status'   => $databaseOk ? 'ok' : 'degraded',
-            'database' => $databaseOk ? 'ok' : 'error',
+        if (!$databaseOk) {
+            return Response::failure(503, 'Datenbank nicht erreichbar');
+        }
+
+        return Response::success([
+            'status'   => 'ok',
+            'database' => 'ok',
             'time'     => date(DATE_ATOM),
-        ], $databaseOk ? 200 : 503);
+        ]);
     }
 }

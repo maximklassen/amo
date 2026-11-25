@@ -41,6 +41,7 @@ final class Request
         array $headers = [],
         private readonly string $rawBody = '',
         private readonly array $form = [],
+        public readonly string $ip = '',
     ) {
         $this->method = strtoupper($method);
         $this->path = '/' . trim($path, '/');
@@ -77,6 +78,8 @@ final class Request
             $headers,
             (string) file_get_contents('php://input'),
             $_POST,
+            // Bewusst nur REMOTE_ADDR: X-Forwarded-For kann der Client frei setzen
+            (string) ($_SERVER['REMOTE_ADDR'] ?? ''),
         );
     }
 
