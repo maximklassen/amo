@@ -17,8 +17,8 @@ import ProfilPage         from '@/pages/profil/ProfilPage.jsx';
 import EinstellungenPage  from '@/pages/einstellungen/EinstellungenPage.jsx';
 import NotFoundPage       from '@/pages/NotFoundPage.jsx';
 
-import Header from '@/components/layout/Header.jsx';
-import Footer from '@/components/layout/Footer.jsx';
+import Header from '@/components/layout/Header/Header.jsx';
+import Footer from '@/components/layout/Footer/Footer.jsx';
 
 export default function App() {
 
