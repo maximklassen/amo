@@ -1,6 +1,6 @@
 -- ============================================================
 -- ParzellenPlaner – Datenbankschema
--- Import: phpMyAdmin → Importieren → diese Datei, danach seed.sql und seed_extra.sql
+-- Import: phpMyAdmin → Importieren → diese Datei, danach seed.sql
 -- ACHTUNG: Beim Import werden alle Tabellen gelöscht und neu angelegt.
 -- ============================================================
 CREATE DATABASE IF NOT EXISTS kleingarten CHARACTER
