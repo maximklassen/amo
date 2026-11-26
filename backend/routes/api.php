@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Controllers\AuthController;
 use App\Controllers\HealthController;
+use App\Controllers\ProfileController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CsrfMiddleware;
 use App\Http\Router;
@@ -23,6 +24,13 @@ return static function (Router $router): void {
             $r->post('/register', [AuthController::class, 'register']);
             $r->post('/login', [AuthController::class, 'login']);
             $r->post('/logout', [AuthController::class, 'logout'], [AuthMiddleware::class]);
+        });
+
+        // Eigene Daten: nur angemeldet
+        $r->group('/profile', [AuthMiddleware::class], function (Router $r): void {
+            $r->get('', [ProfileController::class, 'show']);
+            $r->put('', [ProfileController::class, 'update']);
+            $r->put('/password', [ProfileController::class, 'changePassword']);
         });
     });
 };

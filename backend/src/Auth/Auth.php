@@ -119,6 +119,39 @@ final class Auth
         return $this->user() ?? throw new \LogicException('Angemeldeter Benutzer nicht gefunden');
     }
 
+    /**
+     * Ändert die persönlichen Daten des angemeldeten Benutzers (E-Mail und Rolle bleiben unberührt).
+     *
+     * @param array<string, mixed> $data first_name, last_name, phone, street, city, zip
+     * @return array<string, mixed> der aktualisierte Benutzer
+     */
+    public function updateProfile(int $userId, array $data): array
+    {
+        $this->users->saveProfile($userId, $data);
+        $this->forgetLoadedUser();
+
+        return $this->user() ?? throw new \LogicException('Benutzer nach Profiländerung nicht gefunden');
+    }
+
+    /**
+     * Ändert das Passwort des angemeldeten Benutzers. Das alte Passwort muss stimmen.
+     * Die Session-ID wird erneuert (der Benutzer bleibt angemeldet, der CSRF-Token bleibt gültig).
+     *
+     * @throws HttpException 400, wenn das alte Passwort falsch ist (bewusst nicht 401: das Frontend
+     *                       würde bei 401 abmelden, obwohl der Benutzer nur das Passwort vertippt hat)
+     */
+    public function changePassword(int $userId, string $oldPassword, string $newPassword): void
+    {
+        $hash = $this->users->findPasswordHash($userId);
+
+        if ($hash === null || !password_verify($oldPassword, $hash)) {
+            throw new HttpException(400, 'invalid_old_password', 'Das alte Passwort ist falsch');
+        }
+
+        $this->users->updatePasswordHash($userId, $this->hashPassword($newPassword));
+        $this->session->regenerate();
+    }
+
     public function logout(): void
     {
         $this->session->invalidate();
@@ -185,6 +218,12 @@ final class Auth
         $this->session->set('last_activity', time());
         $this->csrf->rotate();
 
+        $this->forgetLoadedUser();
+    }
+
+    /** Beim nächsten user()-Aufruf werden die Daten neu aus der Datenbank gelesen. */
+    private function forgetLoadedUser(): void
+    {
         $this->user = null;
         $this->loaded = false;
     }
