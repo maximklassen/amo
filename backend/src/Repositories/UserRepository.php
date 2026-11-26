@@ -80,6 +80,32 @@ final class UserRepository
         );
     }
 
+    /**
+     * Ändert die persönlichen Daten (users_data). Legt die Zeile an, falls sie fehlt (z. B. bei Konten aus dem Seed).
+     *
+     * @param array<string, mixed> $profile first_name, last_name, phone, street, city, zip
+     */
+    public function saveProfile(int $userId, array $profile): void
+    {
+        $this->db->upsert('users_data', [
+            'user_id'    => $userId,
+            'first_name' => $profile['first_name'],
+            'last_name'  => $profile['last_name'],
+            'phone'      => $profile['phone'] ?? null,
+            'street'     => $profile['street'] ?? null,
+            'city'       => $profile['city'] ?? null,
+            'zip'        => $profile['zip'] ?? null,
+        ], ['user_id']);
+    }
+
+    /** Nur für die Passwortänderung: der aktuelle Hash eines Benutzers. */
+    public function findPasswordHash(int $id): ?string
+    {
+        $hash = $this->db->scalar('SELECT password_hash FROM users WHERE id = :id', ['id' => $id]);
+
+        return is_string($hash) ? $hash : null;
+    }
+
     public function updatePasswordHash(int $id, string $passwordHash): void
     {
         $this->db->execute(
