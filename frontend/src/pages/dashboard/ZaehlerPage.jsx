@@ -11,15 +11,25 @@ const TYPES = [
 const dateFormat = new Intl.DateTimeFormat('de-DE');
 const numberFormat = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 2 });
 
-function toConsumption(readings) {
-    return readings.slice(1).map((reading, i) => ({
-        from: readings[i].read_at,
-        to: reading.read_at,
-        consumption: reading.value - readings[i].value,
-    }));
+// Verbrauch je Jahr: jeder Zeitraum zwischen zwei Ständen zählt zum Jahr seines Enddatums
+function toYearlyConsumption(readings) {
+    const years = [];
+    readings.slice(1).forEach((reading, i) => {
+        const year = reading.read_at.slice(0, 4);
+        const consumption = reading.value - readings[i].value;
+        const last = years.at(-1);
+
+        if (last?.year === year) {
+            last.to = reading.read_at;
+            last.consumption += consumption;
+        } else {
+            years.push({ year, from: readings[i].read_at, to: reading.read_at, consumption });
+        }
+    });
+    return years;
 }
 
-function ReadingForm({ meter, onSaved }) {
+function ReadingForm({ meter, unit, onSaved }) {
     const [value, setValue] = useState('');
     const [error, setError] = useState('');
     const [saving, setSaving] = useState(false);
@@ -55,7 +65,7 @@ function ReadingForm({ meter, onSaved }) {
 
     return (
         <form className="reading-form" onSubmit={handleSubmit} noValidate>
-            <label htmlFor={inputId}>Neuer Zählerstand ({meter.unit})</label>
+            <label htmlFor={inputId}>Neuer Zählerstand ({unit})</label>
             <div className="reading-form__row">
                 <input
                     id={inputId}
@@ -75,7 +85,7 @@ function ReadingForm({ meter, onSaved }) {
             <p id={`${inputId}-hint`} className={error ? 'reading-form__error' : 'reading-form__hint'}>
                 {error ||
                     (last
-                        ? `Letzter Stand: ${numberFormat.format(last.value)} ${meter.unit} am ${dateFormat.format(new Date(last.read_at))}`
+                        ? `Letzter Stand: ${numberFormat.format(last.value)} ${unit} am ${dateFormat.format(new Date(last.read_at))}`
                         : 'Noch kein Stand erfasst.')}
             </p>
         </form>
@@ -92,11 +102,15 @@ function MeterSection({ config, meter, onSaved }) {
             {meter ? (
                 <>
                     <ConsumptionChart
-                        points={toConsumption(meter.readings)}
-                        unit={meter.unit ?? config.unit}
+                        points={toYearlyConsumption(meter.readings)}
+                        unit={config.unit}
                         label={config.title}
                     />
-                    <ReadingForm meter={{ ...meter, unit: meter.unit ?? config.unit }} onSaved={onSaved} />
+                    <ReadingForm meter={meter} unit={config.unit} onSaved={onSaved} />
+                    {/* TODO: Modal mit allen Zählerständen öffnen */}
+                    <button className="btn btn--outline btn--sm" type="button" onClick={() => {}}>
+                        Historie
+                    </button>
                 </>
             ) : (
                 <p className="meter__empty">Für deine Parzelle ist kein {config.title.toLowerCase()}zähler eingetragen.</p>

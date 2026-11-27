@@ -14,7 +14,7 @@ export default function ConsumptionChart({ points, unit, label }) {
     }
 
     const data = {
-        labels: points.map((p) => p.to.slice(0, 4)),
+        labels: points.map((p) => p.year),
         datasets: [
             {
                 data: points.map((p) => p.consumption),
@@ -54,7 +54,7 @@ export default function ConsumptionChart({ points, unit, label }) {
 
     return (
         <figure className="chart">
-            <Bar data={data} options={options} aria-label={`${label}: Verbrauch je Zeitraum in ${unit}`} role="img" />
+            <Bar data={data} options={options} aria-label={`${label}: Verbrauch je Jahr in ${unit}`} role="img" />
         </figure>
     );
 }
