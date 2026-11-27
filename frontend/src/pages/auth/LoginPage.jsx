@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Leaf } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth.js';
+import { ApiError } from '@/api/api.js';
 import { useModal } from '@/context/ModalContext.jsx';
 import styles from './AuthForm.module.css';
 import loginStyles from './LoginPage.module.css';
 
 export default function LoginPage() {
   const { login } = useAuth();
+  const [serverError, setServerError] = useState('');
   const { openRegister } = useModal();
   const navigate = useNavigate();
 
@@ -33,14 +35,21 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    const data = new FormData(e.target);
-
-    // API-Aufruf folgt später
-    console.log('Login:', Object.fromEntries(data));
+    try {
+      setServerError('');
+      await login(formData.email, formData.passwort);
+      navigate('/dashboard');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setServerError(err.message);
+      } else {
+        setServerError('Verbindungsfehler. Bitte versuchen Sie es erneut.');
+      }
+    }
   };
 
   return (
@@ -150,6 +159,10 @@ export default function LoginPage() {
                   Passwort vergessen?
                 </NavLink>
               </div>
+
+              {serverError && (
+                <p className={styles.serverError}>{serverError}</p>
+              )}
 
               <button type="submit" className={`btn btn--primary ${styles.submitBtn}`}>
                 Anmelden

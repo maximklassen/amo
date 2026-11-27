@@ -306,6 +306,15 @@
   line-height: 1.4;
 }
 
+.serverError {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 10px;
+  background: rgba(220, 38, 38, 0.06);
+  border-radius: var(--radius-md);
+}
+
 /* Buttons */
 .submitBtn {
   width: 100%;
