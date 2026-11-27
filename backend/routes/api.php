@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 use App\Controllers\AuthController;
+use App\Controllers\DashboardController;
 use App\Controllers\HealthController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CsrfMiddleware;
+use App\Http\Middleware\PaechterMiddleware;
 use App\Http\Router;
 
 // Alle API-Routen. Die Datei gibt eine Funktion zurück, die den Router befüllt.
@@ -23,6 +25,11 @@ return static function (Router $router): void {
             $r->post('/register', [AuthController::class, 'register']);
             $r->post('/login', [AuthController::class, 'login']);
             $r->post('/logout', [AuthController::class, 'logout'], [AuthMiddleware::class]);
+        });
+
+        $r->group('/mein-garten', [PaechterMiddleware::class], function (Router $r): void {
+            $r->get('/zaehler', [DashboardController::class, 'getMeters']);
+            $r->post('/zaehler/{id:\d+}/readings', [DashboardController::class, 'addMeterReading']);
         });
     });
 };

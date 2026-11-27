@@ -144,13 +144,8 @@ CREATE TABLE
     parcel_id INT UNSIGNED NOT NULL,
     type ENUM ('strom', 'wasser') NOT NULL,
     number VARCHAR(30) NOT NULL UNIQUE,
-    installed_at DATE NOT NULL,
     removed_at DATE NULL,
     CONSTRAINT fk_meters_parcel FOREIGN KEY (parcel_id) REFERENCES parcels (id) ON DELETE RESTRICT,
-    CONSTRAINT chk_meters_dates CHECK (
-      removed_at IS NULL
-      OR removed_at >= installed_at
-    ),
     INDEX idx_meters_parcel (parcel_id, type)
   ) ENGINE = InnoDB;
 
@@ -158,7 +153,6 @@ CREATE TABLE
 -- Zählerstände
 -- value = absoluter Stand (Strom in kWh, Wasser in m³). Der Verbrauch wird nicht
 -- gespeichert, sondern berechnet: Differenz zum vorherigen Stand desselben Zählers.
--- entered_by = wer den Stand eingetragen hat (Pächter oder Vorstand)
 -- ------------------------------------------------------------
 CREATE TABLE
   meter_readings (
@@ -166,10 +160,7 @@ CREATE TABLE
     meter_id INT UNSIGNED NOT NULL,
     read_at DATE NOT NULL,
     value DECIMAL(10, 2) NOT NULL,
-    entered_by INT UNSIGNED NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_meter_readings_meter FOREIGN KEY (meter_id) REFERENCES meters (id) ON DELETE CASCADE,
-    CONSTRAINT fk_meter_readings_user FOREIGN KEY (entered_by) REFERENCES users (id) ON DELETE SET NULL,
     CONSTRAINT chk_meter_readings_value CHECK (value >= 0),
     -- Pro Zähler höchstens ein Stand pro Tag
     CONSTRAINT uq_meter_readings_meter_date UNIQUE (meter_id, read_at)
