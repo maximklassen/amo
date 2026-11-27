@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from '@/components/shared/ProtectedRoute.jsx';
 
 
-import StartseitePage     from '@/pages/public/StartseitePage.jsx';
+import StartseitePage     from '@/pages/public/StartseitePage/StartseitePage.jsx';
 import UeberUnsPage       from '@/pages/public/UeberUnsPage.jsx';
 import KontaktPage        from '@/pages/public/KontaktPage.jsx';
 import LoginPage          from '@/pages/auth/LoginPage.jsx';

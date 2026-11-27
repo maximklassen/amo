@@ -1,0 +1,318 @@
+/* --- Startseite — ParzellenPlaner --- */
+
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Hero --- */
+.hero {
+  position: relative;
+  background-color: var(--color-bg-dark);
+  overflow: hidden;
+  min-height: 580px;
+  display: flex;
+  align-items: center;
+}
+
+.heroInner {
+  position: relative;
+  z-index: 2;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 80px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 680px;
+}
+
+/* Badge */
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(82, 183, 136, 0.15);
+  border: 1px solid rgba(82, 183, 136, 0.3);
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  width: fit-content;
+}
+
+/* Titel */
+.heroTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.15;
+}
+
+.heroTitleAccent {
+  color: var(--color-accent);
+}
+
+.heroText {
+  font-size: 1.0625rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.7;
+  max-width: 540px;
+}
+
+/* CTA-Buttons */
+.heroActions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.heroBtnPrimary {
+  background-color: var(--color-accent) !important;
+}
+
+.heroBtnPrimary:hover {
+  background-color: var(--color-primary-light) !important;
+}
+
+.heroBtnOutline {
+  color: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.heroBtnOutline:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+/* Dekoratives Element */
+.heroDecor {
+  position: absolute;
+  right: -60px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.heroDecorCircle {
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: rgba(82, 183, 136, 0.06);
+  border: 1px solid rgba(82, 183, 136, 0.1);
+}
+
+.heroDecorLeaf {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 8rem;
+  opacity: 0.15;
+}
+
+/* --- Gemeinsame Section-Stile --- */
+.sectionInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.sectionTitle {
+  text-align: center;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+
+.sectionText {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 1.0625rem;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* --- Features --- */
+.features {
+  background-color: var(--color-bg);
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.featureCard {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-normal),
+              transform var(--transition-normal);
+}
+
+.featureCard:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+.featureIcon {
+  width: 56px;
+  height: 56px;
+  background: rgba(45, 106, 79, 0.08);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+}
+
+.featureTitle {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 10px;
+}
+
+.featureText {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* --- Vorteile --- */
+.benefits {
+  background-color: var(--color-bg-card);
+}
+
+.benefitsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.benefitsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.benefitsContent .sectionTitle,
+.benefitsContent .sectionText {
+  text-align: left;
+  margin: 0;
+}
+
+.benefitsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+}
+
+.benefitsItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+.benefitsItem svg {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* Statistik-Karte */
+.statsCard {
+  background: var(--color-bg-dark);
+  border-radius: var(--radius-xl);
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 24px 0;
+}
+
+.statNumber {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-accent);
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.statDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* --- CTA --- */
+.cta {
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+}
+
+.cta .sectionInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 80px 24px;
+}
+
+.ctaTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 800;
+  color: #ffffff;
+  text-align: center;
+}
+
+.ctaText {
+  font-size: 1.0625rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  max-width: 480px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .featureGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .benefitsGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .heroInner {
+    padding: 60px 24px;
+  }
+
+  .heroDecor {
+    display: none;
+  }
+}

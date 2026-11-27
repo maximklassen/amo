@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LogIn, UserPlus, Menu, X, Leaf } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth.js';
-import styles from '../Header/Header.module.css';
+import styles from './Header.module.css';
 
 export default function Header () {
   const { user, logout } = useAuth();
@@ -36,7 +36,7 @@ export default function Header () {
         {/* Desktop Navigation */}
         <nav className={styles.nav}>
           {!user ? (
-            /* Публічне меню */
+            /* Public menu */
             <>
               <NavLink
                 to="/"
@@ -64,7 +64,7 @@ export default function Header () {
               </NavLink>
             </>
           ) : (
-            /* Меню після входу */
+            /* Menu after logging in */
             <>
               <NavLink
                 to="/dashboard"
@@ -102,7 +102,7 @@ export default function Header () {
           )}
         </nav>
 
-        {/* Auth кнопки */}
+        {/* Auth buttons */}
         <div className={styles.actions}>
           {!user ? (
             <>
@@ -130,7 +130,7 @@ export default function Header () {
           )}
         </div>
 
-        {/* Burger для мобільних */}
+        {/* Burger menu */}
         <button
           className={styles.burger}
           onClick={() => setMenuOpen(!menuOpen)}
@@ -141,7 +141,7 @@ export default function Header () {
 
       </div>
 
-      {/* Мобільне меню */}
+      {/* Mobile menu */}
       {menuOpen && (
         <div className={styles.mobileMenu}>
           {!user ? (
