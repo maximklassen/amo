@@ -217,6 +217,21 @@ INSERT INTO meter_readings (meter_id, read_at, value) VALUES
 (25, '2026-10-15',  8023.00);
 
 -- ------------------------------------------------------------
+-- Rechnungen: Anna Schulz (Parzelle 3, 250 m², nur Wasser) für 2025 und 2026
+-- ------------------------------------------------------------
+INSERT INTO invoices (id, number, user_id, parcel_id, year, issued_at, due_at, status) VALUES
+(1, '2025-003', 3, 3, 2025, '2025-11-01', '2025-12-01', 'bezahlt'),
+(2, '2026-003', 3, 3, 2026, '2026-11-01', '2026-12-01', 'offen');
+
+INSERT INTO invoice_items (invoice_id, description, quantity, unit, unit_price, amount) VALUES
+(1, 'Pacht',            250.00, 'm²',  0.30,  75.00),
+(1, 'Mitgliedsbeitrag',   1.00, NULL, 30.00,  30.00),
+(1, 'Wasser',            42.90, 'm³',  2.50, 107.25),
+(2, 'Pacht',            250.00, 'm²',  0.30,  75.00),
+(2, 'Mitgliedsbeitrag',   1.00, NULL, 30.00,  30.00),
+(2, 'Wasser',            40.30, 'm³',  2.50, 100.75);
+
+-- ------------------------------------------------------------
 -- Gemeinschaftsarbeit: Aufgaben (angelegt vom ersten Vorstand)
 -- Termine relativ zum Importdatum, damit sie immer in der Zukunft liegen.
 -- ------------------------------------------------------------

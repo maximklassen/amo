@@ -10,6 +10,10 @@ SET
 USE kleingarten;
 
 -- Reihenfolge wegen Fremdschlüsseln: abhängige Tabellen zuerst löschen
+DROP TABLE IF EXISTS invoice_items;
+
+DROP TABLE IF EXISTS invoices;
+
 DROP TABLE IF EXISTS meter_readings;
 
 DROP TABLE IF EXISTS meters;
@@ -164,6 +168,40 @@ CREATE TABLE
     CONSTRAINT chk_meter_readings_value CHECK (value >= 0),
     -- Pro Zähler höchstens ein Stand pro Tag
     CONSTRAINT uq_meter_readings_meter_date UNIQUE (meter_id, read_at)
+  ) ENGINE = InnoDB;
+
+-- ------------------------------------------------------------
+-- Rechnungen (Kopf). Die Summe wird nicht gespeichert: SUM(invoice_items.amount).
+-- ------------------------------------------------------------
+CREATE TABLE
+  invoices (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    number VARCHAR(20) NOT NULL UNIQUE,
+    user_id INT UNSIGNED NOT NULL,
+    parcel_id INT UNSIGNED NOT NULL,
+    year SMALLINT UNSIGNED NOT NULL,
+    issued_at DATE NOT NULL,
+    due_at DATE NOT NULL,
+    status ENUM ('offen', 'bezahlt', 'storniert') NOT NULL DEFAULT 'offen',
+    CONSTRAINT fk_invoices_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_invoices_parcel FOREIGN KEY (parcel_id) REFERENCES parcels (id) ON DELETE RESTRICT,
+    INDEX idx_invoices_user (user_id, year)
+  ) ENGINE = InnoDB;
+
+-- ------------------------------------------------------------
+-- Rechnungspositionen. unit_price wird beim Erstellen aus settings kopiert,
+-- damit spätere Tarifänderungen alte Rechnungen nicht verändern.
+-- ------------------------------------------------------------
+CREATE TABLE
+  invoice_items (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    invoice_id INT UNSIGNED NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    quantity DECIMAL(10, 2) NOT NULL DEFAULT 1,
+    unit VARCHAR(10) NULL,
+    unit_price DECIMAL(10, 2) NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    CONSTRAINT fk_invoice_items_invoice FOREIGN KEY (invoice_id) REFERENCES invoices (id) ON DELETE CASCADE
   ) ENGINE = InnoDB;
 
 -- ------------------------------------------------------------

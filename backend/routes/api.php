@@ -3,8 +3,9 @@
 declare(strict_types=1);
 
 use App\Controllers\AuthController;
-use App\Controllers\DashboardController;
 use App\Controllers\HealthController;
+use App\Controllers\InvoiceController;
+use App\Controllers\MetersController;
 use App\Controllers\ProfileController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CsrfMiddleware;
@@ -29,8 +30,10 @@ return static function (Router $router): void {
         });
 
         $r->group('/mein-garten', [PaechterMiddleware::class], function (Router $r): void {
-            $r->get('/zaehler', [DashboardController::class, 'getMeters']);
-            $r->post('/zaehler/{id:\d+}/readings', [DashboardController::class, 'addMeterReading']);
+            $r->get('/zaehler', [MetersController::class, 'getMeters']);
+            $r->post('/zaehler/{id:\d+}/readings', [MetersController::class, 'addMeterReading']);
+            $r->get('/rechnungen', [InvoiceController::class, 'getInvoices']);
+            $r->get('/rechnungen/{id:\d+}', [InvoiceController::class, 'getInvoice']);
         });
 
         // Eigene Daten: nur angemeldet

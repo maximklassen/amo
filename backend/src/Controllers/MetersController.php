@@ -8,7 +8,7 @@ use App\Database\Connection;
 use App\Http\Request;
 use App\Http\Response;
 
-final class DashboardController
+final class MetersController
 {
     public function __construct(private readonly Connection $db) {
     }
