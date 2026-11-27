@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom';
 import { useModal } from '@/context/ModalContext.jsx';
 import Modal from '@/components/ui/Modal.jsx';
 import RegisterForm from '@/pages/auth/RegisterForm.jsx';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from '@/components/shared/ProtectedRoute.jsx';
 
 import ProtectedRoute from '@/components/shared/ProtectedRoute.jsx';
 import Header from '@/components/layout/Header/Header.jsx';
@@ -11,7 +13,13 @@ import StartseitePage     from '@/pages/public/StartseitePage/StartseitePage.jsx
 import UeberUnsPage       from '@/pages/public/UeberUnsPage.jsx';
 import KontaktPage        from '@/pages/public/KontaktPage.jsx';
 import LoginPage          from '@/pages/auth/LoginPage.jsx';
+import RegisterPage       from '@/pages/auth/RegisterPage.jsx';
+import DashboardLayout    from '@/pages/dashboard/components/DashboardLayout.jsx';
 import DashboardPage      from '@/pages/dashboard/DashboardPage.jsx';
+import ZaehlerPage        from '@/pages/dashboard/ZaehlerPage.jsx';
+import RechnungenPage     from '@/pages/dashboard/RechnungenPage.jsx';
+import BegehungPage       from '@/pages/dashboard/BegehungPage.jsx';
+import RechnungDetailPage from '@/pages/rechnung/RechnungDetailPage.jsx';
 import ParzellenPage      from '@/pages/parzellen/ParzellenPage.jsx';
 import ParzellenDetailPage from '@/pages/parzellen/ParzellenDetailPage.jsx';
 import WartelistePage     from '@/pages/warteliste/WartelistePage.jsx';
@@ -38,7 +46,14 @@ export default function App() {
           <Route path="/login"     element={<LoginPage />} />
 
           <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard"       element={<DashboardPage />} />
+            <Route path="/mein-garten" element={<DashboardLayout />}>
+              <Route index              element={<DashboardPage />} />
+              <Route path="zaehler"     element={<ZaehlerPage />} />
+              <Route path="rechnungen"  element={<RechnungenPage />} />
+              <Route path="begehung"    element={<BegehungPage />} />
+            </Route>
+            <Route path="/rechnung/:id"    element={<RechnungDetailPage />} />
+            <Route path="/dashboard"       element={<Navigate to="/mein-garten" replace />} />
             <Route path="/parzellen"       element={<ParzellenPage />} />
             <Route path="/parzellen/:id"   element={<ParzellenDetailPage />} />
             <Route path="/warteliste"      element={<WartelistePage />} />
