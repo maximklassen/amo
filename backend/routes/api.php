@@ -31,6 +31,8 @@ return static function (Router $router): void {
         $r->group('/mein-garten', [PaechterMiddleware::class], function (Router $r): void {
             $r->get('/zaehler', [DashboardController::class, 'getMeters']);
             $r->post('/zaehler/{id:\d+}/readings', [DashboardController::class, 'addMeterReading']);
+        });
+
         // Eigene Daten: nur angemeldet
         $r->group('/profile', [AuthMiddleware::class], function (Router $r): void {
             $r->get('', [ProfileController::class, 'show']);
