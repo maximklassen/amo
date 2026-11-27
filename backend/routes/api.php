@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\HealthController;
+use App\Controllers\ProfileController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CsrfMiddleware;
 use App\Http\Middleware\PaechterMiddleware;
@@ -30,6 +31,11 @@ return static function (Router $router): void {
         $r->group('/mein-garten', [PaechterMiddleware::class], function (Router $r): void {
             $r->get('/zaehler', [DashboardController::class, 'getMeters']);
             $r->post('/zaehler/{id:\d+}/readings', [DashboardController::class, 'addMeterReading']);
+        // Eigene Daten: nur angemeldet
+        $r->group('/profile', [AuthMiddleware::class], function (Router $r): void {
+            $r->get('', [ProfileController::class, 'show']);
+            $r->put('', [ProfileController::class, 'update']);
+            $r->put('/password', [ProfileController::class, 'changePassword']);
         });
     });
 };

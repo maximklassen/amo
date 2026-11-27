@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from '@/components/shared/ProtectedRoute.jsx';
 
 
-import StartseitePage     from '@/pages/public/StartseitePage.jsx';
+import StartseitePage     from '@/pages/public/StartseitePage/StartseitePage.jsx';
 import UeberUnsPage       from '@/pages/public/UeberUnsPage.jsx';
 import KontaktPage        from '@/pages/public/KontaktPage.jsx';
 import LoginPage          from '@/pages/auth/LoginPage.jsx';
@@ -22,8 +22,8 @@ import ProfilPage         from '@/pages/profil/ProfilPage.jsx';
 import EinstellungenPage  from '@/pages/einstellungen/EinstellungenPage.jsx';
 import NotFoundPage       from '@/pages/NotFoundPage.jsx';
 
-import Header from '@/components/layout/Header.jsx';
-import Footer from '@/components/layout/Footer.jsx';
+import Header from '@/components/layout/Header/Header.jsx';
+import Footer from '@/components/layout/Footer/Footer.jsx';
 
 export default function App() {
 
