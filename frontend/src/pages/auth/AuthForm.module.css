@@ -1,0 +1,357 @@
+/* --- Auth-Formular (Login & Register) — ParzellenPlaner --- */
+
+/* Split-Layout */
+.authLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 580px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+/* --- Linke Seite --- */
+.leftPanel {
+  background: linear-gradient(160deg, var(--color-primary-dark), var(--color-primary));
+  display: flex;
+  align-items: stretch;
+}
+
+.leftInner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 44px;
+  width: 100%;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logoIcon {
+  width: 42px;
+  height: 42px;
+  background-color: var(--color-accent);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.logoName {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.logoTagline {
+  display: block;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Zitat */
+.leftQuote {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.leftQuote p {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+/* Feature-Liste */
+.leftFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  list-style: none;
+  margin-bottom: 8px;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.featureIcon {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.featureItem strong {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.featureItem span {
+  font-size: 0.775rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* --- Rechte Seite --- */
+.rightPanel {
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 36px;
+  overflow-y: auto;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Fortschrittsanzeige */
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 4px;
+}
+
+.progressStep {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  transition: all var(--transition-normal);
+  flex-shrink: 0;
+}
+
+.progressStepActive {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.progressLine {
+  flex: 1;
+  height: 2px;
+  background: var(--color-border);
+  transition: background-color var(--transition-normal);
+}
+
+.progressLineActive {
+  background: var(--color-primary);
+}
+
+/* Formular-Kopfzeile */
+.formHeader h2 {
+  font-size: 1.5rem;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.formHeader p {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/* Formular */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sectionLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+/* Raster für Felder nebeneinander */
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Einzelnes Feld */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.formGroup label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.required {
+  color: var(--color-error);
+  margin-left: 2px;
+}
+
+/* Input mit Icon */
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 11px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  display: flex;
+}
+
+.inputWrapper input {
+  width: 100%;
+  padding: 10px 12px 10px 34px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  outline: none;
+  transition: border-color var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+.inputWrapper input::placeholder {
+  color: #b0b7c3;
+}
+
+.inputWrapper input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
+  background: #ffffff;
+}
+
+.inputError {
+  border-color: var(--color-error) !important;
+}
+
+/* Passwort anzeigen/verbergen */
+.togglePassword {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  padding: 0;
+  line-height: 1;
+}
+
+/* Fehlermeldung */
+.fieldError {
+  font-size: 0.75rem;
+  color: var(--color-error);
+  min-height: 16px;
+}
+
+/* Checkbox */
+.checkboxGroup {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.checkboxGroup input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.checkboxGroup label {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+/* Buttons */
+.submitBtn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.stepButtons {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.backBtn {
+  width: 100%;
+}
+
+/* Link */
+.link {
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Login-Hinweis unten */
+.loginHint {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/* --- Responsive --- */
+@media (max-width: 640px) {
+  .authLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .leftPanel {
+    display: none;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,3 +1,4 @@
+import { useModal } from '@/context/ModalContext.jsx';
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LogIn, UserPlus, Menu, X, Leaf } from 'lucide-react';
@@ -8,6 +9,8 @@ export default function Header () {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { openRegister } = useModal();
 
   const handleLogout = () => {
     logout();
@@ -110,10 +113,10 @@ export default function Header () {
                 <LogIn size={18} strokeWidth={2} />
                 <span>Anmelden</span>
               </NavLink>
-              <NavLink to="/register" className={styles.btnRegister}>
+              <button onClick={openRegister} className={styles.btnRegister}>
                 <UserPlus size={18} strokeWidth={2} />
                 <span>Registrieren</span>
-              </NavLink>
+              </button>
             </>
           ) : (
             <div className={styles.userMenu}>
