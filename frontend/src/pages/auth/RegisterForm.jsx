@@ -1,5 +1,8 @@
+import { useAuth } from '@/hooks/useAuth.js';
+import { useModal } from '@/context/ModalContext.jsx';
+import { ApiError } from '@/api/api.js';
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { User, Mail, Phone, Home, Hash, MapPin, Lock, Leaf } from 'lucide-react';
 import styles from './AuthForm.module.css';
 
@@ -19,12 +22,19 @@ const STEP_TWO_FIELDS = [
 ];
 
 export default function RegisterForm({ onClose }) {
+
+  const { register } = useAuth();
+  const { closeModal } = useModal();
+  const navigate = useNavigate();
+  const [serverError, setServerError] = useState('');
+
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     vorname: '', nachname: '', email: '', telefon: '',
     strasse: '', hausnr: '', plz: '', ort: '',
     passwort: '', passwortWiederholen: '', datenschutz: false,
   });
+
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
 
@@ -78,17 +88,31 @@ export default function RegisterForm({ onClose }) {
   };
 
   // Formular absenden
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateStepTwo()) return;
 
-    const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value);
-    });
-
-    // API-Aufruf folgt später
-    console.log('Registrierung:', Object.fromEntries(data));
+    try {
+      setServerError('');
+      await register({
+        email: formData.email,
+        password: formData.passwort,
+        first_name: formData.vorname,
+        last_name: formData.nachname,
+        phone: formData.telefon,
+        street: formData.strasse + ' ' + formData.hausnr,
+        city: formData.ort,
+        zip: formData.plz,
+      });
+      closeModal();
+      navigate('/dashboard');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setServerError(err.message);
+      } else {
+        setServerError('Verbindungsfehler. Bitte versuchen Sie es erneut.');
+      }
+    }
   };
 
   return (
