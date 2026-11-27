@@ -1,0 +1,25 @@
+.card {
+  max-width: 760px;
+  padding: 32px;
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 1.375rem;
+}
+
+.description {
+  margin-top: 6px;
+  font-size: 0.9375rem;
+  color: rgba(15, 31, 23, 0.65);
+}
+
+@media (max-width: 600px) {
+  .card { padding: 22px 18px; }
+}
