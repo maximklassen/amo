@@ -1,6 +1,13 @@
+import { Routes, Route } from 'react-router-dom';
+import { useModal } from '@/context/ModalContext.jsx';
+import Modal from '@/components/ui/Modal.jsx';
+import RegisterForm from '@/pages/auth/RegisterForm.jsx';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from '@/components/shared/ProtectedRoute.jsx';
 
+import ProtectedRoute from '@/components/shared/ProtectedRoute.jsx';
+import Header from '@/components/layout/Header/Header.jsx';
+import Footer from '@/components/layout/Footer/Footer.jsx';
 
 import StartseitePage     from '@/pages/public/StartseitePage/StartseitePage.jsx';
 import UeberUnsPage       from '@/pages/public/UeberUnsPage.jsx';
@@ -22,10 +29,11 @@ import ProfilPage         from '@/pages/profil/ProfilPage.jsx';
 import EinstellungenPage  from '@/pages/einstellungen/EinstellungenPage.jsx';
 import NotFoundPage       from '@/pages/NotFoundPage.jsx';
 
-import Header from '@/components/layout/Header/Header.jsx';
-import Footer from '@/components/layout/Footer/Footer.jsx';
+
 
 export default function App() {
+
+  const { modal, closeModal } = useModal();
 
   return (
     <>
@@ -36,7 +44,6 @@ export default function App() {
           <Route path="/ueber-uns" element={<UeberUnsPage />} />
           <Route path="/kontakt"   element={<KontaktPage />} />
           <Route path="/login"     element={<LoginPage />} />
-          <Route path="/register"  element={<RegisterPage />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path="/mein-garten" element={<DashboardLayout />}>
@@ -60,6 +67,11 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+
+      {/* Register-Modal */}
+      <Modal isOpen={modal === 'register'} onClose={closeModal}>
+        <RegisterForm onClose={closeModal} />
+      </Modal>
     </>
   );
 }

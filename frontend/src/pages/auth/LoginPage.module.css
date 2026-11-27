@@ -1,0 +1,42 @@
+/* --- Login-Seite — ParzellenPlaner --- */
+
+/* Vollbild-Wrapper */
+.page {
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  padding: 40px 24px;
+}
+
+/* Passwort vergessen Zeile */
+.forgotRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -6px;
+}
+
+/* Registrieren-Link als Button */
+.registerLink {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.registerLink:hover {
+  text-decoration: underline;
+}
+
+/* Tagline */
+.tagline {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
