@@ -179,3 +179,177 @@
         padding: 20px 16px;
     }
 }
+
+/* Rechnungen */
+
+.invoices {
+    display: grid;
+    gap: 20px;
+}
+
+.invoice {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+}
+
+.invoice__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.invoice__meta {
+    font-size: 0.875rem;
+}
+
+.invoice__status {
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.invoice__status--offen {
+    background: #fef3c7;
+    color: var(--color-warning);
+}
+
+.invoice__status--bezahlt {
+    background: var(--color-accent-light);
+    color: var(--color-primary-dark);
+}
+
+.invoice__status--storniert {
+    background: var(--color-border);
+    color: var(--color-text-muted);
+}
+
+.invoice__dates {
+    display: flex;
+    gap: 32px;
+    margin: 16px 0;
+    font-size: 0.875rem;
+}
+
+.invoice__dates dt {
+    color: var(--color-text-muted);
+}
+
+.invoice__dates dd {
+    font-weight: 500;
+}
+
+.invoice__items {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+}
+
+.invoice__items th,
+.invoice__items td {
+    padding: 8px 0;
+    text-align: right;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.invoice__items th:first-child,
+.invoice__items td:first-child {
+    text-align: left;
+}
+
+.invoice__items thead th {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+}
+
+.invoice__items tfoot th,
+.invoice__items tfoot td {
+    border-bottom: none;
+    font-weight: 700;
+}
+
+.invoice__actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.invoice-menu {
+    position: relative;
+}
+
+.invoice-menu__toggle {
+    display: flex;
+    padding: 6px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+
+.invoice-menu__toggle:hover {
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
+.invoice-menu__list {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 4px);
+    z-index: 10;
+    min-width: 200px;
+    padding: 4px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+}
+
+.invoice-menu__list button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    font: inherit;
+    font-size: 0.875rem;
+    color: var(--color-text);
+    text-align: left;
+    cursor: pointer;
+}
+
+.invoice-menu__list button:hover {
+    background: var(--color-bg);
+}
+
+/* Beim Drucken nur die gewählte Rechnung zeigen */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .invoice--print,
+    .invoice--print * {
+        visibility: visible;
+    }
+
+    .invoice--print {
+        position: absolute;
+        inset: 0 0 auto;
+        border: none;
+    }
+
+    .invoice--print .invoice__actions {
+        display: none;
+    }
+}

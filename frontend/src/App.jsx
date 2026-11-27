@@ -12,7 +12,6 @@ import DashboardPage      from '@/pages/dashboard/DashboardPage.jsx';
 import ZaehlerPage        from '@/pages/dashboard/ZaehlerPage.jsx';
 import RechnungenPage     from '@/pages/dashboard/RechnungenPage.jsx';
 import BegehungPage       from '@/pages/dashboard/BegehungPage.jsx';
-import RechnungDetailPage from '@/pages/rechnung/RechnungDetailPage.jsx';
 import ParzellenPage      from '@/pages/parzellen/ParzellenPage.jsx';
 import ParzellenDetailPage from '@/pages/parzellen/ParzellenDetailPage.jsx';
 import WartelistePage     from '@/pages/warteliste/WartelistePage.jsx';
@@ -45,7 +44,6 @@ export default function App() {
               <Route path="rechnungen"  element={<RechnungenPage />} />
               <Route path="begehung"    element={<BegehungPage />} />
             </Route>
-            <Route path="/rechnung/:id"    element={<RechnungDetailPage />} />
             <Route path="/dashboard"       element={<Navigate to="/mein-garten" replace />} />
             <Route path="/parzellen"       element={<ParzellenPage />} />
             <Route path="/parzellen/:id"   element={<ParzellenDetailPage />} />

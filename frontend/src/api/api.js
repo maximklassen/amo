@@ -111,10 +111,10 @@ export const deleteUser = (id) => del(`users/${id}`);
 
 //Zähler
 
-// Erwartete Antwort von GET mein-garten/zaehler (Endpoint ist im Backend noch offen):
-// [{ id, type: 'strom' | 'wasser', number, parcel_number,
-//    readings: [{ id, read_at: 'YYYY-MM-DD', value }] }]   // readings aufsteigend nach Datum
+
 export const getMyMeters = () => get('mein-garten/zaehler');
-// Neuer Stand mit heutigem Datum; Antwort: der aktualisierte Zähler (Format wie oben)
 export const addMeterReading = (meterId, value) =>
     post(`mein-garten/zaehler/${meterId}/readings`, { value });
+
+export const getInvoice = (invoiceId) => get(`mein-garten/rechnungen/${invoiceId}`);
+export const getInvoices = () => get('mein-garten/rechnungen');
