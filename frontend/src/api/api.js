@@ -1,9 +1,11 @@
 const BASE_URL = import.meta.env.VITE_API_URL ?? '';
 
 export class ApiError extends Error{
-    constructor(message, status) {
+    // errors: Fehlermeldungen je Eingabefeld bei Validierungsfehlern (400), z. B. { zip: 'Bitte 5 Ziffern angeben' }
+    constructor(message, status, errors = {}) {
         super(message);
         this.status = status;
+        this.errors = errors;
     }
 }
 
@@ -28,7 +30,7 @@ async function request(endpoint, {body, headers, ...rest} = {}) {
     }
 
     if (data.error) {
-        throw new ApiError(data.message, data.statuscode);
+        throw new ApiError(data.message, data.statuscode, data.response?.errors ?? {});
     }
     
     return data.response;

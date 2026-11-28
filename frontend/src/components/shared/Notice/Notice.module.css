@@ -1,0 +1,27 @@
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.notice svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.success {
+  background-color: #e8f6ee;
+  color: #14532d;
+  border: 1px solid var(--color-accent-light);
+}
+
+.error {
+  background-color: #fff1ea;
+  color: #9a3412;
+  border: 1px solid #fdba8c;
+}

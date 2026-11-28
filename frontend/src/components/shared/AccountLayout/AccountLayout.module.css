@@ -1,0 +1,106 @@
+.page {
+  padding: 40px 0 72px;
+}
+
+/* --- Kopfkarte --- */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-green);
+  color: #ffffff;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: var(--color-accent);
+  color: var(--color-primary-dark);
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.heroText {
+  min-width: 0;
+}
+
+.name {
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+.role {
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  background-color: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.role_vorstand {
+  background-color: var(--color-accent-light);
+  color: var(--color-primary-dark);
+}
+
+/* --- Reiter --- */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 24px;
+  border-bottom: 1.5px solid rgba(15, 31, 23, 0.1);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  margin-bottom: -1.5px;
+  border-bottom: 3px solid transparent;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: rgba(15, 31, 23, 0.65);
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.tab:hover {
+  color: var(--color-primary);
+}
+
+.tabActive {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+@media (max-width: 600px) {
+  /* Reiter bleiben in einer Zeile (bei Bedarf seitlich scrollbar) */
+  .tabs { flex-wrap: nowrap; gap: 0; overflow-x: auto; }
+  .tab { padding: 12px 12px; font-size: 0.875rem; white-space: nowrap; }
+
+  .page { padding: 24px 0 56px; }
+  .hero { padding: 20px; gap: 16px; }
+  .avatar { width: 56px; height: 56px; font-size: 1.2rem; }
+}
